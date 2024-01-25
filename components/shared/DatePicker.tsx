@@ -16,8 +16,8 @@ import Image from "next/image";
 type DatePickerProps = {
   icon?: string;
   placeholder?: string;
-  date: Date | null;
-  onChange: (date: Date) => void;
+  date: Date;
+  onChange: (date: Date | undefined) => void;
 };
 
 export function DatePicker({

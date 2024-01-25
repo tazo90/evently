@@ -24,6 +24,9 @@ import { useState } from "react";
 import Image from "next/image";
 import { DatePicker } from "./DatePicker";
 import { Checkbox } from "../ui/checkbox";
+import { useUploadThing } from "@/lib/uploadthing";
+import { useRouter } from "next/navigation";
+import { createEvent } from "@/lib/actions/event.actions";
 
 type EventFormProps = {
   userId: string;
@@ -32,16 +35,43 @@ type EventFormProps = {
 
 const EventForm = ({ userId, type }: EventFormProps) => {
   const [files, setFiles] = useState<File[]>([]);
+  const router = useRouter();
+  const { startUpload } = useUploadThing("imageUploader");
 
   const form = useForm<z.infer<typeof eventFormSchema>>({
     resolver: zodResolver(eventFormSchema),
     defaultValues: eventDefaultValues,
   });
 
-  function onSubmit(values: z.infer<typeof eventFormSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof eventFormSchema>) {
+    let uploadedImageUrl = values.imageUrl as string;
+
+    if (files.length > 0) {
+      const uploadedImages = await startUpload(files);
+
+      if (!uploadedImages) {
+        return;
+      }
+
+      uploadedImageUrl = uploadedImages[0].url;
+    }
+
+    if (type === "Create") {
+      try {
+        const newEvent = await createEvent({
+          event: { ...values, imageUrl: uploadedImageUrl },
+          userId,
+          path: "/profile",
+        });
+
+        if (newEvent) {
+          form.reset();
+          router.push(`/events/${newEvent.id}`);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
   }
 
   return (
@@ -107,11 +137,11 @@ const EventForm = ({ userId, type }: EventFormProps) => {
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormControl className="h-72">
-                  <FileUploader
+                  {/* <FileUploader
                     onFieldChange={field.change}
                     imageUrl={field.value}
                     setFiles={setFiles}
-                  />
+                  /> */}
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -157,8 +187,10 @@ const EventForm = ({ userId, type }: EventFormProps) => {
                     <DatePicker
                       icon="/assets/icons/calendar.svg"
                       placeholder="Start Date"
-                      date={field.value}
-                      onChange={(date: Date) => field.onChange(date)}
+                      date={field.value || new Date()}
+                      onChange={(date: Date | undefined) =>
+                        field.onChange(date)
+                      }
                     />
                   </div>
                 </FormControl>
@@ -177,8 +209,10 @@ const EventForm = ({ userId, type }: EventFormProps) => {
                     <DatePicker
                       icon="/assets/icons/calendar.svg"
                       placeholder="End Date"
-                      date={field.value}
-                      onChange={(date: Date) => field.onChange(date)}
+                      date={field.value || new Date()}
+                      onChange={(date: Date | undefined) =>
+                        field.onChange(date)
+                      }
                     />
                   </div>
                 </FormControl>
