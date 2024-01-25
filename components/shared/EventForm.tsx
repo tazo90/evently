@@ -223,6 +223,8 @@ const EventForm = ({ userId, type }: EventFormProps) => {
                               </label>
                               <Checkbox
                                 id="isFree"
+                                onCheckedChange={field.onChange}
+                                checked={field.value}
                                 className="mr-2 h-5 w-5 border-2 border-primary-500"
                               />
                             </div>
@@ -252,7 +254,6 @@ const EventForm = ({ userId, type }: EventFormProps) => {
                       height={24}
                     />
                     <Input
-                      type="number"
                       placeholder="URL"
                       {...field}
                       className="p-regular-16 border-0 bg-grey-50 outline-offset-0 focus:border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -265,7 +266,14 @@ const EventForm = ({ userId, type }: EventFormProps) => {
           />
         </div>
 
-        <Button type="submit">Submit</Button>
+        <Button
+          type="submit"
+          size="lg"
+          disabled={form.formState.isSubmitting}
+          className="button col-span-2 w-full"
+        >
+          {form.formState.isSubmitting ? "Submitting..." : `${type} Event`}
+        </Button>
       </form>
     </Form>
   );
