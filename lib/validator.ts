@@ -12,8 +12,8 @@ export const eventFormSchema = z.object({
     .max(400, "Location must be at less 3 characters"),
   imageUrl: z.string(),
 
-  startDateTime: z.date(),
-  endDateTime: z.date(),
+  startDateTime: z.date().nullable(),
+  endDateTime: z.date().nullable(),
   categoryId: z.string(),
   price: z.string(),
   isFree: z.boolean(),

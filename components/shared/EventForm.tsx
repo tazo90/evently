@@ -21,6 +21,8 @@ import Dropdown from "./Dropdown";
 import { Textarea } from "@/components/ui/textarea";
 import FileUploader from "./FileUploader";
 import { useState } from "react";
+import Image from "next/image";
+import { DatePicker } from "./DatePicker";
 
 type EventFormProps = {
   userId: string;
@@ -109,6 +111,55 @@ const EventForm = ({ userId, type }: EventFormProps) => {
                     imageUrl={field.value}
                     setFiles={setFiles}
                   />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="flex flex-col gap-5 md:flex-row">
+          <FormField
+            control={form.control}
+            name="location"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormControl>
+                  <div className="flex-center h-[54px] w-full overflow-hidden rounded-full bg-grey-50 px-4 py-2">
+                    <Image
+                      src="/assets/icons/location-grey.svg"
+                      alt="calendar"
+                      width={24}
+                      height={24}
+                    />
+                    <Input
+                      placeholder="Event location or online"
+                      {...field}
+                      className="input-field"
+                    />
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="flex flex-col gap-5 md:flex-row">
+          <FormField
+            control={form.control}
+            name="startDateTime"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormControl>
+                  <div className="flex-start h-[54px] w-full overflow-hidden rounded-full bg-grey-50 py-2">
+                    <DatePicker
+                      icon="/assets/icons/calendar.svg"
+                      placeholder="Start Date"
+                      date={field.value}
+                      onChange={(date: Date) => field.onChange(date)}
+                    />
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
