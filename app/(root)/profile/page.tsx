@@ -53,7 +53,7 @@ const ProfilePage = async () => {
           collectionType="Events_Organized"
           limit={6}
           page={1}
-          totalPage={2}
+          totalPages={2}
           urlParamName="eventsPage"
         />
       </section>
