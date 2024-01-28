@@ -13,13 +13,13 @@ export async function POST(request: Request) {
   try {
     event = stripe.webhooks.constructEvent(body, sig, endpointSecret);
   } catch (err) {
-    return NextResponse.json({ message: "Webhook Error", error: err });
+    return NextResponse.json({ message: "Webhook error", error: err });
   }
 
   // Get the ID and type
   const eventType = event.type;
 
-  // Create
+  // CREATE
   if (eventType === "checkout.session.completed") {
     const { id, amount_total, metadata } = event.data.object;
 
