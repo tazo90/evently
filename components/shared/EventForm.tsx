@@ -87,7 +87,13 @@ const EventForm = ({ userId, type, event, eventId }: EventFormProps) => {
       try {
         const updatedEvent = await updateEvent({
           userId,
-          event: { ...values, imageUrl: uploadedImageUrl, _id: eventId },
+          event: {
+            ...values,
+            imageUrl: uploadedImageUrl,
+            _id: eventId,
+            startDateTime: values.startDateTime || new Date(),
+            endDateTime: values.endDateTime || new Date(),
+          },
           path: `/events/${eventId}`,
         });
 
